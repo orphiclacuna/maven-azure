@@ -1,0 +1,32 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+yaml 
+ 
+trigger: 
+  branches: 
+    include: 
+      - main  # Trigger pipeline on main branch (or your default branch) 
+ 
+pool: 
+  vmImage: 'ubuntu-latest'  # You can choose another image like 'windows-latest' or 'macos-latest' 
+ 
+steps: - task: UseJavaToolInstaller@1 
+  inputs: 
+    versionSpec: '1.8'  # You can specify the Java version you are using 
+ - task: Maven@3 
+  inputs: 
+    mavenPomFile: 'pom.xml'  # Path to your pom.xml file 
+    goals: 'clean install'  # You can use other Maven goals as required 
+    options: '-X'  # Optional: Additional Maven options 
+ - task: PublishTestResults@2 
+  inputs: 
+    testResultsFiles: '**/target/test-*.xml'  # Path to the test reports 
+    testRunTitle: 'Maven Unit Tests' 
+ - task: PublishBuildArtifacts@1 
+  inputs: 
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'  # Directory to publish 
+    artifactName: 'drop'  # Artifact name 
+    publishLocation: 'Container' 
